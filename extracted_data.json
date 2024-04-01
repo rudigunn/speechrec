@@ -1,0 +1,8 @@
+{
+    "Auftragsdetails": {
+        "Tuerart": "Haustür",
+        "Schliessmechanismus": "Riegel",
+        "Schliesssystem": "Zahlencode",
+        "Beschaedigungen": "Nein, keine Schäden"
+    }
+}
