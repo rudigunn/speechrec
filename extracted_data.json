@@ -2,7 +2,7 @@
     "Auftragsdetails": {
         "Tuerart": "Haustür",
         "Schliessmechanismus": "Riegel",
-        "Schliesssystem": "Fingerprint",
+        "Schliesssystem": "elektronisch mit Zahlencode",
         "Beschaedigungen": "Nein, keine Schäden"
     }
 }

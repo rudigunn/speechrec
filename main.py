@@ -3,7 +3,10 @@ import re
 import threading
 import time
 import json
+import wave
+import pyaudio
 import pygame
+import requests
 import speech_recognition as sr
 
 from queue import Queue
@@ -75,15 +78,38 @@ def transcribe_audio(audio):
         return ""
     
 
-def synthesize_audio(text, deepgramAPI):
-    deepgram = DeepgramClient(api_key=deepgramAPI)
-    options = SpeakOptions(model="aura-orion-en")
-    speak_options = {"text": text}
-    response = deepgram.speak.v("1").stream(speak_options, options)
-    audio_buffer = response.stream
-    audio_buffer.seek(0)
-    audio = AudioSegment.from_mp3(audio_buffer)
-    return audio
+def synthesize_audio(text):
+    headers = {
+        "Authorization": f'Bearer {openaiAPI}',
+    }
+
+    data = {
+        "model": "tts-1",
+        "input": text,
+        "voice": "nova",
+        "response_format": "wav",
+    }
+
+    response = requests.post('https://api.openai.com/v1/audio/speech', headers=headers, json=data, stream=True)
+
+    CHUNK_SIZE = 1024
+
+    if response.ok:
+        with wave.open(response.raw, 'rb') as wf:
+            p = pyaudio.PyAudio()
+            stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
+                            channels=wf.getnchannels(),
+                            rate=wf.getframerate(),
+                            output=True)
+
+            while len(data := wf.readframes(CHUNK_SIZE)): 
+                stream.write(data)
+
+            time.sleep(0.25)
+            stream.close()
+            p.terminate()
+    else:
+        response.raise_for_status()
 
 
 def tts_worker():
@@ -92,9 +118,7 @@ def tts_worker():
             sentence = tts_queue.get(block=True, timeout=400)
             if sentence is None:  
                 break
-            audio = synthesize_audio(sentence, deepgramAPI)
-            play(audio)
-            print(tts_queue.qsize())
+            synthesize_audio(sentence)
         else:
             time.sleep(0.25)
         
