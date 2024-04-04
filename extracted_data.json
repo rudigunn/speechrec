@@ -1,8 +1,8 @@
 {
     "Auftragsdetails": {
-        "Tuerart": "HaustÃ¼r",
+        "Tuerart": "Haustür",
         "Schliessmechanismus": "Riegel",
-        "Schliesssystem": "Zahlencode",
-        "Beschaedigungen": "Nein, keine SchÃ¤den"
+        "Schliesssystem": "Fingerprint",
+        "Beschaedigungen": "Nein, keine Schäden"
     }
 }
